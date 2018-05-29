@@ -6,7 +6,8 @@
 
 #include "Arduino.h"
 #include "Songs.h"
-
+#include "pitches.h"
+/*
 #define NOTE_B0  31
 #define NOTE_C1  33
 #define NOTE_CS1 35
@@ -96,7 +97,7 @@
 #define NOTE_CS8 4435
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
-
+*/
 int mario_melody[] = {
   NOTE_E7, NOTE_E7, 0, NOTE_E7,
   0, NOTE_C7, NOTE_E7, 0,
@@ -195,13 +196,35 @@ int mario_underworld_tempo[] = {
   3, 3, 3
 };
 
+int zelda_melody[] = {
+  NOTE_C4, NOTE_A4, NOTE_G4, NOTE_F4, NOTE_G4,  NOTE_E4,
+  NOTE_C4, NOTE_A4, NOTE_G4, NOTE_F4, NOTE_E4,  NOTE_F4,
+  NOTE_C4, NOTE_A4, NOTE_G4, NOTE_F4, NOTE_G4,  NOTE_CS4,
+  NOTE_C4, NOTE_A4, NOTE_G4, NOTE_F4, NOTE_CS4, NOTE_C4,
+  NOTE_C4, NOTE_A4, NOTE_G4, NOTE_F4, NOTE_DS4, NOTE_CS4,
+  NOTE_A3, NOTE_G3, NOTE_G4, NOTE_F4, NOTE_FS4, NOTE_F4,
+  NOTE_G4, NOTE_F4, NOTE_G4, NOTE_CS4, NOTE_F4, NOTE_G4,
+  NOTE_F4, NOTE_CS4, NOTE_C4
+};
+
+int zelda_noteDurations[] = {
+  3, 4, 4, 6, 6, 3,
+  4, 6, 6, 4, 4, 3,
+  2, 6, 6, 4, 6, 6,
+  3, 4, 4, 6, 6, 3,
+  3, 4, 4, 6, 6, 3,
+  4, 6, 6, 4, 4, 3,
+  4, 6, 6, 4, 6, 6,
+  3, 4, 4
+};
+
 Songs::SongPin(int pin)
 {
   pinMode(pin, OUTPUT);
   _pin = pin;
 }
 
-void SuperMario::notes()
+void SuperMario::mario()
 {
   sing(1);
   sing(1);
@@ -245,4 +268,15 @@ void SuperMario::buzz(int targetPin, long frequency, long length)
     delayMicroseconds(delayValue);
   }
   digitalWrite(targetPin, LOW);
+}
+
+void Zelda::zelda(int targetPin)
+{
+  for (int thisNote = 0; thisNote < 45; thisNote++) {
+    int noteDuration = 1000/zelda_noteDurations[thisNote];
+    tone(_pin, zelda_melody[thisNote],noteDuration);
+    int pauseBetweenNotes = noteDuration * 1.30;
+    delay(pauseBetweenNotes);
+    noTone(_pin);
+  }
 }
